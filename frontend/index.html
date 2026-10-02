@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Shorts Top X% Scraper | Powered by yt-dlp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff0033'><path d='M17.77 10.32l-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.93-2.67-2.23-3.25zM10 14.5v-5l4.5 2.5-4.5 2.5z'/></svg>">
+</head>
+<body>
+  <div class="background-glow glow-1"></div>
+  <div class="background-glow glow-2"></div>
+  
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-group">
+        <div class="logo-icon">
+          <!-- Shorts Icon -->
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.77 10.32l-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.93-2.67-2.23-3.25zM10 14.5v-5l4.5 2.5-4.5 2.5z"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="app-title">YouTube Shorts Top <span class="gradient-text">X%</span> Extractor</h1>
+          <p class="app-subtitle">Scrape Shorts across multiple channels, rank by views & comments, and download top URLs to TXT</p>
+        </div>
+      </div>
+      <div class="badge-tag">
+        <span class="pulse-dot"></span> ⚡ Shorts Mode Active
+      </div>
+    </header>
+
+    <!-- Main Grid Layout -->
+    <main class="main-grid">
+      <!-- Left Panel: Input & Settings -->
+      <section class="card config-card">
+        <div class="card-header">
+          <h2>1. Channels & Filters</h2>
+          <span class="card-caption">Enter handles or URLs</span>
+        </div>
+
+        <form id="scrape-form" class="scrape-form">
+          <!-- Channel Inputs -->
+          <div class="form-group">
+            <div class="label-row">
+              <label for="channel-input">Channel Usernames / URLs</label>
+              <span class="helper-text" id="channel-count-badge">0 channels</span>
+            </div>
+            <textarea 
+              id="channel-input" 
+              name="channels" 
+              rows="4" 
+              placeholder="Enter YouTube channels (one per line or comma-separated)&#10;e.g.&#10;@MrBeast&#10;@veritasium&#10;https://www.youtube.com/@ZachChoi"
+              required
+            ></textarea>
+            
+            <!-- Quick Presets -->
+            <div class="presets-row">
+              <span class="presets-label">Quick test:</span>
+              <button type="button" class="chip-btn" data-channel="@MrBeast">+ MrBeast</button>
+              <button type="button" class="chip-btn" data-channel="@veritasium">+ Veritasium</button>
+              <button type="button" class="chip-btn" data-channel="@ZachChoi">+ Zach Choi</button>
+              <button type="button" class="chip-btn" data-channel="@mkbhd">+ MKBHD</button>
+            </div>
+          </div>
+
+          <!-- Content Type Selector -->
+          <div class="form-group">
+            <label>Scrape Target</label>
+            <div class="type-selector-tabs">
+              <button type="button" class="type-tab active" data-type="shorts">
+                ⚡ Shorts Only (Active)
+              </button>
+              <button type="button" class="type-tab" data-type="videos">
+                🎬 Regular Long Videos
+              </button>
+            </div>
+            <input type="hidden" id="content-type-input" value="shorts">
+          </div>
+
+          <!-- Slider: Top X Percentage -->
+          <div class="form-group slider-group">
+            <div class="label-row">
+              <label for="percentage-slider">Top Percentage (X%) of Shorts</label>
+              <div class="percentage-display">
+                <span id="percentage-val">10</span>%
+              </div>
+            </div>
+            <input 
+              type="range" 
+              id="percentage-slider" 
+              min="1" 
+              max="100" 
+              value="10" 
+              step="1"
+            >
+            <div class="slider-presets">
+              <button type="button" class="preset-pill" data-pct="5">Top 5%</button>
+              <button type="button" class="preset-pill active" data-pct="10">Top 10%</button>
+              <button type="button" class="preset-pill" data-pct="20">Top 20%</button>
+              <button type="button" class="preset-pill" data-pct="33">Top 33%</button>
+              <button type="button" class="preset-pill" data-pct="50">Top 50%</button>
+            </div>
+          </div>
+
+          <!-- Metric Selector -->
+          <div class="form-group">
+            <label>Ranking Metric</label>
+            <div class="metric-options">
+              <label class="metric-card active">
+                <input type="radio" name="metric" value="views" checked>
+                <div class="metric-content">
+                  <div class="metric-icon">👁️</div>
+                  <div class="metric-title">Most Views</div>
+                  <div class="metric-desc">Rank by total views</div>
+                </div>
+              </label>
+
+              <label class="metric-card">
+                <input type="radio" name="metric" value="comments">
+                <div class="metric-content">
+                  <div class="metric-icon">💬</div>
+                  <div class="metric-title">Most Comments</div>
+                  <div class="metric-desc">Rank by comments count</div>
+                </div>
+              </label>
+
+              <label class="metric-card">
+                <input type="radio" name="metric" value="combined">
+                <div class="metric-content">
+                  <div class="metric-icon">🔥</div>
+                  <div class="metric-title">Combined Score</div>
+                  <div class="metric-desc">Views + comments score</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Advanced Options -->
+          <div class="form-group advanced-group">
+            <div class="advanced-grid">
+              <div>
+                <label for="max-videos-input">Max Shorts to Inspect</label>
+                <select id="max-videos-input">
+                  <option value="50">Latest 50 shorts (Super Fast)</option>
+                  <option value="100">Latest 100 shorts</option>
+                  <option value="250">Latest 250 shorts</option>
+                  <option value="0" selected>All Shorts (Full channel archive)</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="min-views-input">Minimum Views per Short</label>
+                <input type="number" id="min-views-input" min="0" step="1000" value="0" placeholder="Enter 100000 for 100K+">
+                <span class="input-caption">Enter 100000 for Shorts with 100K+ views; 0 = no minimum</span>
+              </div>
+
+              <div class="checkbox-container">
+                <label class="custom-checkbox">
+                  <input type="checkbox" id="fetch-comments-toggle">
+                  <span class="checkmark"></span>
+                  <span class="checkbox-label">Deep Fetch Comment Counts</span>
+                </label>
+                <span class="checkbox-caption">Required if ranking specifically by comment volume</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" id="start-scrape-btn" class="btn-primary">
+            <span class="btn-icon">⚡</span>
+            <span class="btn-text">Start Extracting Top Shorts</span>
+          </button>
+        </form>
+      </section>
+
+      <!-- Right Panel: Live Progress & Terminal Console -->
+      <section class="card status-card">
+        <div class="card-header">
+          <h2>2. Extraction Progress & Status</h2>
+          <div class="status-indicator" id="overall-status-badge">
+            <span class="status-dot"></span> <span id="overall-status-text">Idle</span>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="progress-bar" style="width: 0%;"></div>
+          <span class="progress-percentage" id="progress-percent-label">0%</span>
+        </div>
+
+        <!-- Live Terminal / Logs Output -->
+        <div class="terminal-console" id="terminal-console">
+          <div class="terminal-line system"><span class="prompt">$</span> System ready (Shorts mode). Add YouTube channels and click "Start Extracting".</div>
+        </div>
+
+        <!-- Stat Summary Counters -->
+        <div class="stat-counters-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="stat-channels">0</div>
+            <div class="stat-label">Channels</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-total-scanned">0</div>
+            <div class="stat-label">Shorts Scanned</div>
+          </div>
+          <div class="stat-card highlight">
+            <div class="stat-value" id="stat-top-extracted">0</div>
+            <div class="stat-label">Top Extracted</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-total-views">0</div>
+            <div class="stat-label">Total Views</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Results Section -->
+    <section class="card results-card" id="results-card">
+      <div class="results-header">
+        <div>
+          <h2>3. Extracted Top Shorts</h2>
+          <p class="results-sub" id="results-summary-text">No shorts extracted yet.</p>
+        </div>
+
+        <!-- Export Buttons Group -->
+        <div class="export-actions">
+          <button id="download-txt-btn" class="btn-export primary" title="Download clean .txt with 1 Shorts URL per line" disabled>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download TXT (Shorts URLs)
+          </button>
+          
+          <button id="download-detailed-txt-btn" class="btn-export secondary" title="Download formatted .txt with stats" disabled>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Detailed TXT
+          </button>
+
+          <button id="download-csv-btn" class="btn-export secondary" title="Download CSV with all columns" disabled>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+            CSV
+          </button>
+
+          <button id="copy-all-btn" class="btn-export tertiary" title="Copy all Shorts URLs to clipboard" disabled>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy All URLs
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter / Search Toolbar -->
+      <div class="results-toolbar" id="results-toolbar" style="display: none;">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="video-search-input" placeholder="Search by short title or channel...">
+        </div>
+        <div class="view-toggles">
+          <button class="view-btn active" id="view-grid-btn" title="Grid View">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </button>
+          <button class="view-btn" id="view-table-btn" title="Table View">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Video Cards Container -->
+      <div class="videos-grid shorts-grid" id="videos-grid">
+        <div class="empty-state">
+          <div class="empty-icon">⚡</div>
+          <p>No shorts scraped yet. Enter channel names above and click "Start Extracting".</p>
+        </div>
+      </div>
+
+      <!-- Video Table Container -->
+      <div class="table-container" id="videos-table-container" style="display: none;">
+        <table class="custom-table" id="videos-table">
+          <thead>
+            <tr>
+              <th># Rank</th>
+              <th>Short</th>
+              <th>Channel</th>
+              <th>Views</th>
+              <th>Comments</th>
+              <th>Top %</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="videos-table-body">
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
